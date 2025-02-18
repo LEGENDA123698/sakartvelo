@@ -1,0 +1,77 @@
+{% load static %}
+{% include 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Панель управления для админов -->
+    {% if user.is_staff %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <a href="{% url 'create-dish' %}" class="btn btn-success me-2">Добавить блюдо</a>
+            <a href="{% url 'create-category' %}" class="btn btn-secondary me-2">Добавить категорию</a>
+            <a href="{% url 'list-category-for-delete' %}" class="btn btn-danger">Управление категориями</a>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Основная сетка с категориями и блюдами -->
+    <div class="row">
+        <!-- Левый столбик с категориями -->
+        <div class="col-md-3">
+            <div class="p-3 bg-light rounded shadow-sm">
+                <h3>Меню в закладі</h3>
+                <hr>
+                {% include 'categories/list_categories_in_dishes.html' %}
+            </div>
+        </div>
+
+        <!-- Правый блок с блюдами (3 колонки) -->
+        <div class="col-md-9">
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                {% for dish in dishes %}
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        {% if dish.photo %}
+                        <img src="{{ dish.photo.url }}" class="card-img-top" alt="{{ dish.title }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ dish.title }}</h5>
+                            <p class="card-text">{{ dish.gram|truncatechars:100 }} г</p>
+                            <h5>{{ dish.price|truncatechars:100 }} грн</h5>
+                            <a href="{% url 'detail-dish' dish.pk %}" class="btn btn-primary w-100">Подробнее</a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-center">Нет доступных блюд.</p>
+                {% endfor %}
+            </div>
+
+            <!-- Пагинация -->
+            <nav aria-label="Page navigation" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Предыдущая">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    <li class="page-item disabled">
+                        <span class="page-link">Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+                    </li>
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Следующая">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+{% endblock %}

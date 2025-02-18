@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">👤 Информация обо мне</h2>
+
+    <div class="card shadow-lg border-0">
+        <div class="card-body">
+            <h4 class="card-title text-primary"><i class="bi bi-person-circle"></i> {{ user.username }}</h4>
+            <hr>
+
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>🏡 Место жительства:</strong> {{ user.place_of_residence|default:"<span class='text-muted'>Не указано</span>"|safe }}</li>
+                <li class="list-group-item"><strong>🏠 Дом:</strong> {{ user.home|default:"<span class='text-muted'>Не указано</span>"|safe }}</li>
+                <li class="list-group-item"><strong>🏢 Квартира:</strong> {{ user.apartment|default:"<span class='text-muted'>Не указано</span>"|safe }}</li>
+            </ul>
+
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{% url 'profile-menu' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Вернуться
+                </a>
+                <a href="{% url 'edit-profile-info' %}" class="btn btn-outline-primary">
+                    <i class="bi bi-pencil-square"></i> Редактировать
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

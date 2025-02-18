@@ -1,0 +1,327 @@
+{% extends 'base.html' %}
+
+{% block extra_head %}
+<style>
+.suggestions {
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+.suggestion-item {
+    padding: 8px;
+    cursor: pointer;
+}
+.suggestion-item:hover {
+    background: #f0f0f0;
+}
+</style>
+
+
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <!-- Левая колонка: список блюд -->
+        <div class="col-md-6 order-items">
+            <h4>Выбранные блюда</h4>
+            <ul class="list-group">
+                {% for item in order_items %}
+                <li class="list-group-item d-flex justify-content-between align-items-center" id="item-{{ item.id }}">
+                    <div class="d-flex align-items-center">
+                        <img src="{{ item.dish.photo.url }}" alt="{{ item.dish.title }}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; margin-right: 10px;">
+                        <a href="{% url 'detail-dish' item.dish.pk %}" class="text-decoration-none">{{ item.dish.title }}</a>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <button class="btn btn-sm btn-outline-danger" onclick="updateItem({{ item.id }}, 'decrease')">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <span class="quantity mx-2">{{ item.quantity }} шт.</span>
+                        <button class="btn btn-sm btn-outline-success" onclick="updateItem({{ item.id }}, 'increase')">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                    <span class="ms-3">{{ item.dish.price }} грн</span>
+                    <button class="btn btn-sm btn-outline-danger ms-2" onclick="deleteItem({{ item.id }})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </li>
+                {% endfor %}
+            </ul>
+            <hr>
+            <h5>Итоговая сумма: {{ total_price }} грн</h5>
+        </div>
+        
+
+        <!-- Правая колонка: форма -->
+        <div class="col-md-6 order-form">
+            <h4>Данные для доставки</h4>
+            <button class="btn btn-warning mb-3" id="pullProfileInfo">Заполнить из профиля</button>
+            <form method="post" action="#">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="name" class="form-label">Имя</label>
+                    <input type="text" class="form-control" id="name" name="name" value="{{ user.first_name }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="address" class="form-label">Адрес</label>
+                    <input type="text" class="form-control" id="address" name="address" placeholder="Введите улицу" required autocomplete="off">
+                    <div id="suggestions" class="suggestions"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="home">Дом</label>
+                        <input type="text" id="home" name="home" class="form-control" inputmode="numeric" pattern="\d{1,3}" maxlength="3" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="apartment">Квартира</label>
+                        <input type="text" id="apartment" name="apartment" class="form-control" inputmode="numeric" pattern="\d{1,4}" maxlength="4">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="delivery_date" class="form-label">Дата доставки</label>
+                    <input type="date" class="form-control" id="delivery_date" name="delivery_date" required>
+                </div>
+                <div class="mb-3">
+                    <label for="delivery_time" class="form-label">Время доставки</label>
+                    <input type="time" class="form-control" id="delivery_time" name="delivery_time" required>
+                </div>
+                <button type="submit" class="btn btn-success">Оформить</button>
+                {% if user.is_staff %}
+                    <a href="{% url 'street-list' %}" class="btn btn-warning mt-3">Управление улицами</a>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    // JavaScript для заполнения полей данными из профиля
+    document.getElementById('pullProfileInfo').addEventListener('click', function () {
+        // Получаем данные из профиля пользователя (передаются через контекст Django)
+        const userProfile = {
+            name: "{{ user.username }}", // Имя пользователя
+            address: "{{ user.place_of_residence }}", // Адрес
+            home: "{{ user.home }}", // Дом
+            apartment: "{{ user.apartment }}" // Квартира
+        };
+
+        // Заполняем поля формы
+        document.getElementById('name').value = userProfile.name || '';
+        document.getElementById('address').value = userProfile.address || '';
+        document.getElementById('home').value = userProfile.home || '';
+        document.getElementById('apartment').value = userProfile.apartment || '';
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const homeInput = document.getElementById('home');
+        const apartmentInput = document.getElementById('apartment');
+    
+        // Функция для фильтрации ввода
+        function allowOnlyNumbers(inputElement, maxLength) {
+            inputElement.addEventListener('input', function () {
+                // Удаляем все символы, кроме цифр
+                this.value = this.value.replace(/[^0-9]/g, '');
+                // Ограничиваем длину
+                if (this.value.length > maxLength) {
+                    this.value = this.value.slice(0, maxLength);
+                }
+            });
+        }
+    
+        // Применяем функцию к полям
+        allowOnlyNumbers(homeInput, 3);       // Максимум 3 цифры для дома
+        allowOnlyNumbers(apartmentInput, 4); // Максимум 4 цифры для квартиры
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const addressInput = document.getElementById("address");
+        const suggestionsBox = document.getElementById("suggestions");
+        let allStreets = [];  // Храним список всех улиц
+
+        // Функция для загрузки всех улиц
+        function loadAllStreets() {
+            fetch(`/orders/street-suggestions/`)  // Загружаем ВСЕ улицы
+                .then(response => response.json())
+                .then(data => {
+                    allStreets = data.streets; // Сохраняем все улицы
+                    showSuggestions(allStreets); // Показываем список улиц
+                })
+                .catch(error => console.error("Ошибка загрузки улиц:", error));
+        }
+
+        // Функция для отображения подсказок
+        function showSuggestions(streets) {
+            suggestionsBox.innerHTML = ""; // Очищаем старый список
+            if (streets.length === 0) {
+                suggestionsBox.innerHTML = "<div class='suggestion-item'>Нет данных</div>";
+                return;
+            }
+            streets.forEach(street => {
+                const suggestionItem = document.createElement("div");
+                suggestionItem.textContent = street;
+                suggestionItem.classList.add("suggestion-item");
+                suggestionItem.addEventListener("click", function () {
+                    addressInput.value = street;
+                    suggestionsBox.innerHTML = ""; // Закрываем список
+                });
+                suggestionsBox.appendChild(suggestionItem);
+            });
+        }
+
+        // Загружаем список улиц при фокусе
+        addressInput.addEventListener("focus", function () {
+            if (allStreets.length === 0) {
+                loadAllStreets();
+            } else {
+                showSuggestions(allStreets);
+            }
+        });
+
+        // Фильтруем улицы при вводе текста
+        addressInput.addEventListener("input", function () {
+            const query = addressInput.value.trim().toLowerCase();
+            if (query.length === 0) {
+                showSuggestions(allStreets); // Показываем весь список
+                return;
+            }
+
+            const filteredStreets = allStreets.filter(street => street.toLowerCase().includes(query));
+            showSuggestions(filteredStreets);
+        });
+
+        // Закрываем список при клике вне поля
+        document.addEventListener("click", function (event) {
+            if (!addressInput.contains(event.target) && !suggestionsBox.contains(event.target)) {
+                suggestionsBox.innerHTML = "";
+            }
+        });
+    });
+</script>
+
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const addressInput = document.getElementById("address");
+        const suggestionsBox = document.getElementById("suggestions");
+    
+        addressInput.addEventListener("input", function () {
+            const query = addressInput.value.trim();
+    
+            if (query.length === 0) {
+                suggestionsBox.innerHTML = "";
+                return;
+            }
+    
+            fetch(`/orders/street-suggestions/?query=${query}`)
+                .then(response => response.json())
+                .then(data => {
+                    suggestionsBox.innerHTML = "";
+                    data.streets.forEach(street => {
+                        const suggestionItem = document.createElement("div");
+                        suggestionItem.textContent = street;
+                        suggestionItem.classList.add("suggestion-item");
+                        suggestionItem.addEventListener("click", function () {
+                            addressInput.value = street;
+                            suggestionsBox.innerHTML = "";
+                        });
+                        suggestionsBox.appendChild(suggestionItem);
+                    });
+                })
+                .catch(error => console.error("Ошибка загрузки улиц:", error));
+        });
+    
+        // Закрываем список подсказок при клике вне поля
+        document.addEventListener("click", function (event) {
+            if (!addressInput.contains(event.target) && !suggestionsBox.contains(event.target)) {
+                suggestionsBox.innerHTML = "";
+            }
+        });
+    });
+    </script>
+    
+
+<script>
+    function updateItem(itemId, action) {
+        // Получаем CSRF токен
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    
+        // Создаем объект с данными формы
+        const formData = new FormData();
+        formData.append("action", action);
+        formData.append("csrfmiddlewaretoken", csrfToken);
+    
+        // Отправляем запрос на сервер
+        fetch(`/orders/card/update-item/${itemId}/`, {
+            method: "POST",
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Ошибка запроса: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.new_quantity !== undefined) {
+                // Обновляем количество на странице
+                const itemElement = document.querySelector(`#item-${itemId}`);
+                const quantityElement = itemElement.querySelector(".quantity");
+                quantityElement.textContent = `${data.new_quantity} шт.`;
+    
+                // Обновляем итоговую сумму
+                const totalPriceElement = document.querySelector("h5");
+                totalPriceElement.textContent = `Итоговая сумма: ${data.total_price} грн`;
+            } else {
+                console.error("Ошибка сервера:", data.error || "Неизвестная ошибка");
+            }
+        })
+        .catch(error => {
+            console.error("Ошибка:", error);
+        });
+    }
+</script>
+
+<script>
+    // Функция для удаления блюда
+    function deleteItem(itemId) {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        fetch(`/orders/item/delete/${itemId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Обновляем итоговую сумму
+                document.querySelector('h5').textContent = `Итоговая сумма: ${data.total_price} грн`;
+
+                // Удаляем элемент из списка
+                document.getElementById(`item-${itemId}`).remove();
+            } else {
+                console.error('Ошибка удаления блюда');
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка:', error);
+        });
+    }
+</script>
+
+
+{% endblock %}
+

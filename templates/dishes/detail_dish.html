@@ -1,0 +1,60 @@
+{% load static %}
+{% include 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <!-- Фото блюда -->
+        <div class="col-md-6 text-center">
+            <div class="p-3 bg-light rounded shadow-sm">
+                {% if dish.photo %}
+                    <img src="{{ dish.photo.url }}" class="img-fluid rounded" alt="{{ dish.title }}">
+                {% else %}
+                    <p class="text-muted">Изображение отсутствует</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Описание блюда -->
+        <div class="col-md-6">
+            <div class="p-3 bg-white rounded shadow-sm">
+                <h2 class="fw-bold">{{ dish.title }}</h2>
+                <p class="text-muted">{{ dish.description|linebreaksbr }}</p>
+                <p>{{ dish.gram }} г</p>
+                <h3>{{ dish.price }} грн</h3>
+
+                <!-- Кнопки редактирования/удаления для админа -->
+                {% if user.is_staff %}
+                <div class="mt-4 d-flex gap-2">
+                    <a href="{% url 'update-dish' dish.pk %}" class="btn btn-warning">
+                        <i class="fas fa-edit"></i> Редактировать
+                    </a>
+                    <a href="{% url 'delete-dish' dish.pk %}" class="btn btn-danger">
+                        <i class="fas fa-trash-alt"></i> Удалить
+                    </a>
+                </div>
+                {% endif %}
+
+                <!-- Форма добавления в заказ -->
+                <form method="post" action="{% url 'add-to-order' dish.pk %}" class="mt-4">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <input type="number" name="quantity" class="form-control" min="1" value="1" required 
+                               {% if not user.is_authenticated %}disabled{% endif %}>
+                        <button type="submit" class="btn btn-success" 
+                                {% if not user.is_authenticated %}disabled{% endif %}>
+                            <i class="fas fa-shopping-cart"></i> Добавить в заказ
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Сообщение и кнопка "Войти" для неавторизованных пользователей -->
+                {% if not user.is_authenticated %}
+                <p class="text-danger mt-2">Войдите в систему, чтобы добавить в заказ.</p>
+                <a href="{% url 'login' %}" class="btn btn-primary mt-2">Войти</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

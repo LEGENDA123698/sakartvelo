@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h2>Оцените блюдо и сервис</h2>
+    </div>
+
+    <div class="card p-4 shadow">
+        {% if user.is_authenticated %}
+            <form id="rating-form" method="POST">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label">Оценка блюда:</label>
+                    <div class="star-rating" data-field="dish-rating">
+                        <i class="fas fa-star" data-value="1"></i>
+                        <i class="fas fa-star" data-value="2"></i>
+                        <i class="fas fa-star" data-value="3"></i>
+                        <i class="fas fa-star" data-value="4"></i>
+                        <i class="fas fa-star" data-value="5"></i>
+                    </div>
+                    <input type="hidden" name="dish_rating" id="dish-rating" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Оценка сервиса:</label>
+                    <div class="star-rating" data-field="service-rating">
+                        <i class="fas fa-star" data-value="1"></i>
+                        <i class="fas fa-star" data-value="2"></i>
+                        <i class="fas fa-star" data-value="3"></i>
+                        <i class="fas fa-star" data-value="4"></i>
+                        <i class="fas fa-star" data-value="5"></i>
+                    </div>
+                    <input type="hidden" name="service_rating" id="service-rating" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Комментарий:</label>
+                    <textarea class="form-control" name="comment" rows="4" placeholder="Напишите свой отзыв..."></textarea>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-lg">Отправить</button>
+                </div>
+            </form>
+        {% else %}
+            <div class="text-center">
+                <p class="text-danger">Вы должны войти в систему, чтобы оставить отзыв.</p>
+                <a href="{% url 'login' %}" class="btn btn-primary">Войти</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".star-rating i").forEach((star) => {
+        star.addEventListener("mouseover", function () {
+            const value = this.getAttribute("data-value");
+            const field = this.parentNode.getAttribute("data-field");
+            highlightStars(field, value);
+        });
+
+        star.addEventListener("click", function () {
+            const value = this.getAttribute("data-value");
+            const field = this.parentNode.getAttribute("data-field");
+            document.getElementById(field).value = value;
+            highlightStars(field, value);
+        });
+
+        star.addEventListener("mouseleave", function () {
+            const field = this.parentNode.getAttribute("data-field");
+            const selectedValue = document.getElementById(field).value;
+            highlightStars(field, selectedValue);
+        });
+    });
+
+    function highlightStars(field, value) {
+        document.querySelectorAll(`[data-field="${field}"] i`).forEach((star) => {
+            star.classList.toggle("text-warning", star.getAttribute("data-value") <= value);
+        });
+    }
+});
+</script>
+
+<script>
+    setTimeout(function() {
+        let messages = document.querySelectorAll('.alert');
+        messages.forEach(function(message) {
+            message.style.display = 'none';
+        });
+    }, 5000);
+</script>
+
+<style>
+    .star-rating {
+        font-size: 24px;
+        cursor: pointer;
+    }
+    .star-rating i {
+        color: gray;
+    }
+    .star-rating i.text-warning {
+        color: gold;
+    }
+</style>
+
+{% endblock %}

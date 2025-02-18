@@ -1,0 +1,45 @@
+/* Стиль для карусели */
+.carousel {
+    max-width: 100%;
+    max-height: 5px; /* Фиксированная высота карусели */
+    overflow: hidden;
+}
+
+.carousel img {
+    width: 10%;  /* Ширина во всю ширину контейнера */
+    height: 500px; /* Фиксированная высота */
+    object-fit: cover; /* Заполнение без искажений */
+}
+
+/* Стиль для текста на слайдах */
+.carousel-caption {
+    background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный фон */
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.carousel-caption h5 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+}
+
+.carousel-caption p {
+    font-size: 1.2rem;
+    color: white;
+}
+
+
+
+.btn-hover-dark:hover {
+    background-color: #343a40; /* Темно-серый (Bootstrap dark) */
+    color: white; /* Белый текст */
+  }
+
+
+.logo {
+    width: 100%; /* Регулируй размер */
+    height: 300px;
+    float: left; /* Перемещение влево */
+}
+

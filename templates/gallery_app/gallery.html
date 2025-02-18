@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
+    <link rel="stylesheet" href="{% static 'css/gallery.css' %}">
+{% endblock %}
+
+{% block content %}
+<h2 class="text-center mb-4">Галерея</h2>
+{% if user.is_staff %}
+    <a href="{% url 'upload-image' %}" class="btn btn-success mb-3">
+        Добавить фото
+    </a>
+{% endif %}
+
+
+<div class="container">
+    <div class="row">
+        {% for image in images %}
+            <div class="col-md-4 col-sm-6 col-12 mb-3">
+                <div class="image-container">
+                    <a href="#" class="image-link" data-index="{{ forloop.counter0 }}" data-id="{{ image.pk }}">
+                        <img src="{{ image.image.url }}" alt="Фото" class="img-thumbnail">
+                    </a>
+                    
+                    {% if user.is_staff %}
+                        <form action="{% url 'delete-image' image.pk %}" method="POST" class="delete-form mt-2">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-muted">Галерея пока пустая.</p>
+        {% endfor %}
+    </div>
+</div>
+
+
+<!-- Модальное окно для просмотра изображений -->
+<div class="modal fade" id="galleryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Просмотр фото</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="modalImage" src="" class="img-fluid">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="prevBtn">Назад</button>
+                <button type="button" class="btn btn-primary" id="nextBtn">Вперед</button>
+                <form id="modalDeleteForm" method="POST" action="{% url 'delete-image' 0 %}">
+                    {% csrf_token %}
+                    {% if user.is_staff %}
+                        <button type="submit" class="btn btn-danger">Удалить</button>
+                    {% endif %}
+                </form>          
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const images = document.querySelectorAll(".image-link");
+        const modal = new bootstrap.Modal(document.getElementById("galleryModal"));
+        const modalImage = document.getElementById("modalImage");
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        const modalDeleteForm = document.getElementById("modalDeleteForm");
+
+        let currentIndex = 0;
+        let imageUrls = [];
+        let imageIds = [];
+
+        images.forEach((img, index) => {
+            imageUrls.push(img.querySelector("img").src);
+            imageIds.push(img.getAttribute("data-id"));
+            img.addEventListener("click", function (event) {
+                event.preventDefault();
+                currentIndex = index;
+                showImage(currentIndex);
+                modal.show();
+            });
+        });
+
+        function showImage(index) {
+            modalImage.src = imageUrls[index];
+            let deleteUrl = `{% url 'delete-image' 0 %}`.replace("0", imageIds[index]);
+            modalDeleteForm.action = deleteUrl; // Устанавливаем корректный URL удаления
+        }
+
+        prevBtn.addEventListener("click", function () {
+            currentIndex = (currentIndex - 1 + imageUrls.length) % imageUrls.length;
+            showImage(currentIndex);
+        });
+
+        nextBtn.addEventListener("click", function () {
+            currentIndex = (currentIndex + 1) % imageUrls.length;
+            showImage(currentIndex);
+        });
+    });
+</script>
+{% endblock %}
+

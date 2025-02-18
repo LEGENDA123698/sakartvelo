@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center">Ваши бронирования</h2>
+    
+    <div class="row">
+        {% for booking in bookings %}
+        <div class="col-md-6 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ booking.name }}</h5>
+                    <p class="card-text">
+                        Дата: {{ booking.date }} <br>
+                        Время: {{ booking.time }} <br>
+                        Количество людей: {{ booking.number_of_people }}
+                    </p>
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'booking-detail' booking.pk %}" class="btn btn-info">Детальнее</a>
+                        <a href="{% url 'booking-delete' booking.pk %}" class="btn btn-danger">Удалить</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center">У вас пока нет бронирований.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

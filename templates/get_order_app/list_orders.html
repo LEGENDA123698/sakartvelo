@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center">Ваши заказы</h2>
+    
+    <div class="row">
+        {% for order in orders %}
+        <div class="col-md-6 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Заказ #{{ order.id }}</h5>
+                    <p class="card-text">
+                        Дата доставки: {{ order.delivery_date }} <br>
+                        Время доставки: {{ order.delivery_time }} <br>
+                        Итоговая сумма: {{ order.total_price }} грн
+                    </p>
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'order-detail' order.pk %}" class="btn btn-info">Детальнее</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center">У вас пока нет заказов.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
