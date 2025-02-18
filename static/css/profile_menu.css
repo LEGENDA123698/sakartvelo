@@ -1,0 +1,68 @@
+/* Полностью центрируем */
+.profile-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+}
+
+/* Контейнер */
+.profile-container {
+    text-align: center;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 350px;
+    width: 100%;
+}
+
+/* Заголовок */
+.profile-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Меню с кнопками */
+.profile-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Общий стиль кнопок */
+.profile-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 12px;
+    font-size: 1.2rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: white;
+    background: linear-gradient(135deg, #4CAF50, #2E7D32);
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+/* Эффект наведения */
+.profile-btn:hover {
+    background: linear-gradient(135deg, #43A047, #1B5E20);
+    transform: scale(1.05);
+}
+
+/* Кнопка выхода (отдельный стиль) */
+.profile-btn.logout {
+    background: linear-gradient(135deg, #E53935, #B71C1C);
+}
+
+.profile-btn.logout:hover {
+    background: linear-gradient(135deg, #D32F2F, #7F0000);
+}
+

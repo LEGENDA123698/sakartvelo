@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'gallery.css' %}">
+{% endblock %}
+{% block content %}
+<h2>Добавить фото в галерею</h2>
+<!-- Форма загрузки фото -->
+<form action="{% url 'upload-image' %}" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" id="upload-button" class="btn btn-success" disabled>Загрузить</button>
+</form>
+<a href="{% url 'gallery' %}" class="btn btn-secondary mt-3">Назад в галерею</a>
+
+<script>
+    // Находим элементы формы
+    const fileInput = document.querySelector('input[type="file"]'); // Поле для выбора файла
+    const uploadButton = document.getElementById('upload-button'); // Кнопка "Загрузить"
+
+    // Добавляем обработчик события на изменение поля выбора файла
+    fileInput.addEventListener('change', function () {
+        if (fileInput.files.length > 0) {
+            uploadButton.removeAttribute('disabled'); // Разблокируем кнопку
+        } else {
+            uploadButton.setAttribute('disabled', 'true'); // Блокируем кнопку
+        }
+    });
+</script>
+{% endblock %}

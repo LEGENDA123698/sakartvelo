@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/profile_menu.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-start min-vh-75 mt-5">
+    <div class="card shadow-lg p-4" style="max-width: 400px; width: 100%;">
+        <h2 class="text-center mb-4">Мой профиль</h2>
+        <div class="d-grid gap-3">
+            {% if user.is_authenticated %}
+                <a href="{% url 'order-list' %}" class="btn btn-success">
+                    <i class="fas fa-box me-2"></i> Мои заказы
+                </a>
+                <a href="{% url 'profile-info' %}" class="btn btn-info">
+                    <i class="fas fa-user me-2"></i> Обо мне
+                </a>
+                <a href="{% url 'booking-list' %}" class="btn btn-primary">
+                    <i class="fas fa-chair me-2"></i> Мои бронирования
+                </a>
+                <a href="{% url 'logout' %}" class="btn btn-danger">
+                    <i class="fas fa-sign-out-alt me-2"></i> Выйти
+                </a>
+            {% else %}
+                <div class="alert alert-warning text-center">
+                    <p>🔒 Вам необходимо войти в аккаунт, чтобы получить доступ к профилю.</p>
+                    <a href="{% url 'register' %}" class="btn btn-warning mt-2">
+                        <i class="fas fa-user-plus me-2"></i> Зарегистрироваться
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+
+<!-- Всплывающее уведомление -->
+<div id="alertMessage" class="alert alert-warning text-center position-fixed w-50 mx-auto" style="top: 10px; left: 25%; display: none;">
+    <i class="fas fa-exclamation-triangle"></i> Войдите в аккаунт, чтобы получить доступ!
+</div>
+
+
+
+
+<!-- Подключаем Font Awesome -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".disabled-link").forEach((btn) => {
+        btn.addEventListener("click", function (e) {
+            e.preventDefault();
+            let alertBox = document.getElementById("alertMessage");
+            alertBox.style.display = "block";
+            setTimeout(() => { alertBox.style.display = "none"; }, 3000);
+        });
+    });
+});
+</script>
+
+<style>
+    .disabled-link {
+        pointer-events: none;
+        opacity: 0.6;
+    }
+    #alertMessage {
+        z-index: 1050;
+    }
+</style>
+
+{% endblock %}

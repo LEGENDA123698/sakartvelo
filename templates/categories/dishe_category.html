@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-3">
+            <!-- Подключаем список категорий -->
+            {% include 'categories/list_categories_in_dishes.html' %}
+        </div>
+        <div class="col-md-9">
+            <h2>Блюда в категории "{{ category.dish }}"</h2>
+            <div class="row">
+                {% for dish in dishes %}
+                <div class="col-md-4 mb-4">
+                    <div class="card" style="width: 18rem;">
+                        {% if dish.photo %}
+                        <img src="{{ dish.photo.url }}" class="card-img-top" alt="{{ dish.title }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ dish.title }}</h5>
+                            <p class="card-text">{{ dish.gram }} г</p>
+                            <h5 class="card-text">{{ dish.price }} грн</h5>
+                            <a href="{% url 'detail-dish' dish.pk %}" class="btn btn-primary">Подробнее</a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p>Нет доступных блюд в этой категории.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
