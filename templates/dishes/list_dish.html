@@ -1,24 +1,35 @@
 {% load static %}
 {% include 'base.html' %}
 
+{% block extra_head %}
+    <link href="{% static 'css/dishes/list_dish.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
 <div class="container mt-5">
     <!-- Панель управления для админов -->
     {% if user.is_staff %}
     <div class="row mb-4">
-        <div class="col-12">
-            <a href="{% url 'create-dish' %}" class="btn btn-success me-2">Добавить блюдо</a>
-            <a href="{% url 'create-category' %}" class="btn btn-secondary me-2">Добавить категорию</a>
-            <a href="{% url 'list-category-for-delete' %}" class="btn btn-danger">Управление категориями</a>
+        <div class="d-flex gap-3">
+            <a href="{% url 'create-dish' %}">
+                <i class="fa-solid fa-utensils fs-3 icon-link"></i>
+            </a>
+            <a href="{% url 'create-category' %}">
+                <i class="fa-solid fa-folder-plus fs-3 icon-link"></i>
+            </a>
+            <a href="{% url 'list-category-for-delete' %}">
+                <i class="fa-solid fa-gears fs-3 icon-link"></i>
+            </a>
         </div>
     </div>
+    
     {% endif %}
 
     <!-- Основная сетка с категориями и блюдами -->
     <div class="row">
         <!-- Левый столбик с категориями -->
-        <div class="col-md-3">
-            <div class="p-3 bg-light rounded shadow-sm">
+        <div class="col-md-3 ">
+            <div class="p-3 bg-light rounded shadow-sm ">
                 <h3>Меню в закладі</h3>
                 <hr>
                 {% include 'categories/list_categories_in_dishes.html' %}

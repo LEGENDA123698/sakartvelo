@@ -14,7 +14,8 @@ class OrdersListView(ListView):
     context_object_name = "orders"
 
     def get_queryset(self):
-        return ResultSolution.objects.filter(user=self.request.user)
+        return ResultSolution.objects.filter(user=self.request.user, is_active=False)
+
 
 class OrderDetailView(DetailView):
     model = ResultSolution
@@ -29,27 +30,40 @@ class OrderDeleteView(DeleteView):
     success_url = reverse_lazy("order-list")
 
 
+
+# страница оформления заказа, формирует итоговую сумму и список блюд.
 @login_required
 def order_page(request):
     user = request.user
-    order_items = OrderItem.objects.filter(order__user=user)
+
+    # Получаем активные позиции корзины
+    order_items = OrderItem.objects.filter(order__user=user, order__is_active=True)
     total_price = sum(float(item.dish.price) * item.quantity for item in order_items)
-    total_items = sum(item.quantity for item in order_items)  # Количество всех блюд
 
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
+            # Удаляем все активные заказы пользователя
+            ResultSolution.objects.filter(user=user, is_active=True).delete()
+
+            # Создаем новый заказ
             order = ResultSolution.objects.create(
                 user=user,
                 comment=form.cleaned_data['comment'],
                 delivery_date=form.cleaned_data['delivery_date'],
                 delivery_time=form.cleaned_data['delivery_time'],
                 total_price=total_price,
+                is_active=False  # Заказ завершен
             )
+
+            # Привязываем позиции к новому заказу
             for item in order_items:
                 item.order = order
                 item.save()
-            OrderItem.objects.filter(order__user=user, order__isnull=True).delete()
+
+            # Удаляем временные (неоформленные) записи
+            OrderItem.objects.filter(order__user=user, order__is_active=True).delete()
+
             return redirect('list-dish')
     else:
         form = OrderForm()
@@ -57,7 +71,6 @@ def order_page(request):
     context = {
         'order_items': order_items,
         'total_price': total_price,
-        'total_items': total_items,  # Передаем в шаблон
         'form': form,
     }
     return render(request, 'get_order_app/order_form.html', context)
@@ -85,29 +98,41 @@ def manage_street(request):
     
     return redirect("street-list")
 
-
+#добавление блюдо в корзину или создание его.
 def add_to_order(request, pk):
     dish = get_object_or_404(Dishes, pk=pk)
-    quantity = int(request.POST.get('quantity', 1))
+
+    quantity = request.POST.get('quantity', '1')
+    try:
+        quantity = int(quantity)
+    except ValueError:
+        return JsonResponse({'error': 'Некорректное количество'}, status=400)
+
     user = request.user
-    orders = ResultSolution.objects.filter(user=user, is_active=True)
-    if orders.exists():
-        order = orders.first()
-    else:
-        order = ResultSolution.objects.create(user=user, is_active=True)
-    order_item, created = OrderItem.objects.get_or_create(order=order, dish=dish, user=user)
-    if created:
-        order_item.quantity = quantity
-    else:
+    order, _ = ResultSolution.objects.get_or_create(user=user, is_active=True)
+
+    # Ищем уже существующую позицию в заказе
+    order_item = OrderItem.objects.filter(user=user, dish=dish, order=order).first()
+
+    if order_item:
+        print(f"Перед изменением: ID {order_item.id}, количество {order_item.quantity}, добавляется {quantity}")
         order_item.quantity += quantity
+    else:
+        order_item = OrderItem.objects.create(
+            user=user, dish=dish, order=order, quantity=quantity
+        )
+        print(f"Создан новый OrderItem: ID {order_item.id}, количество {order_item.quantity}")
+
     order_item.save()
-    
-    # Подсчитываем общее количество товаров в корзине
-    total_items = sum(item.quantity for item in OrderItem.objects.filter(order__user=user))
-    
+
+    # Подсчитываем новую сумму
+    total_price = sum(float(item.dish.price) * item.quantity for item in OrderItem.objects.filter(order=order))
+
+    print(f"После изменения: ID {order_item.id}, новое количество {order_item.quantity}, Итоговая цена: {total_price}")
+
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        return JsonResponse({'total_items': total_items})
-    
+        return JsonResponse({'total_items': order_item.quantity, 'total_price': total_price})
+
     return redirect('detail-dish', pk=dish.pk)
 
 
@@ -127,6 +152,7 @@ def street_suggestions(request):
 def update_item(request, item_id):
     """Функция для изменения количества блюд в корзине."""
     item = get_object_or_404(OrderItem, id=item_id)
+    
     if request.method == "POST":
         action = request.POST.get("action")
         if action == "increase":
@@ -135,13 +161,15 @@ def update_item(request, item_id):
             item.quantity -= 1
         item.save()
 
-        # Подсчитываем новую общую сумму
-        order_items = OrderItem.objects.filter(order__user=request.user)
-        total_price = sum(float(item.dish.price) * item.quantity for item in order_items)
+        # Фильтруем только активный заказ пользователя
+        active_order = ResultSolution.objects.filter(user=request.user, is_active=True).first()
+        order_items = OrderItem.objects.filter(order=active_order)
+        total_price = sum(float(order_item.dish.price) * order_item.quantity for order_item in order_items)
 
         return JsonResponse({'success': True, 'new_quantity': item.quantity, 'total_price': total_price})
+
     
-    
+#отображение корзины с текущими позициями и итоговой ценой.
 def card_view(request):
     """Отображение корзины."""
     order_items = OrderItem.objects.filter(order__user=request.user)
@@ -158,11 +186,13 @@ def delete_order_item(request, item_id):
     """Удаление блюда из корзины."""
     if request.method == 'POST':
         item = get_object_or_404(OrderItem, id=item_id)
+        order = item.order
         item.delete()
 
-        # Обновляем общую сумму корзины
-        order_items = OrderItem.objects.filter(order__user=request.user)
+        # Обновляем общую сумму корзины для активного заказа
+        order_items = OrderItem.objects.filter(order=order)
         total_price = sum(float(item.dish.price) * item.quantity for item in order_items)
 
         return JsonResponse({'success': True, 'total_price': total_price})
+    
     return JsonResponse({'success': False, 'error': 'Неверный запрос'}, status=400)

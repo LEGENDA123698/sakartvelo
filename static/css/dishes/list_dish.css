@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Marck+Script&display=swap');
+
+.category-name {
+    font-family: 'Marck Script', cursive;
+    font-size: 22px;
+}
+
+
+.col-md-3 .p-3 {
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    padding: 15px;
+}
+
+/* Заголовок категорий */
+.col-md-3 h3 {
+    font-size: 26px;
+    font-family: 'Marck Script', cursive;
+    text-align: center;
+    color: #333;
+}
+
+/* Линия под заголовком */
+.col-md-3 hr {
+    border-top: 2px solid #ff0000;
+    width: 100%;
+    margin: 10px auto;
+}
+
+/* Ссылки категорий */
+.col-md-3 a {
+    display: block;
+    padding: 10px;
+    font-size: 20px;
+    font-family: 'Marck Script', cursive;
+    color: #333;
+    text-decoration: none;
+    transition: 0.3s ease-in-out;
+}
+
+.col-md-3 a:hover {
+    color: #ff6b6b;
+    font-weight: bold;
+}
+
+
+
+.icon-link {
+    color: rgb(146, 146, 146) !important; /* Исходный цвет */
+    transition: color 0.3s ease-in-out; /* Плавное изменение цвета */
+}
+
+.icon-link:hover {
+    color: #ff6b6b !important; /* Красный при наведении */
+}
+
+
+
