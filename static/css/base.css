@@ -1,27 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Marck+Script&display=swap');
+
 .container {
     max-width: 960px;
-  }
-  
+}
+
 /*
 * Custom translucent site header
 */
 
-.site-header {
-    background-color: rgba(164, 69, 2, 0.85);
-    -webkit-backdrop-filter: saturate(180%) blur(20px);
-    backdrop-filter: saturate(180%) blur(20px);
+.site-header nav a {
+    font-size: 36px !important;
+    font-weight: bold;
+    font-family: 'Marck Script', cursive;
+    color: #212020 !important; /* Задаём нужный цвет текста */
+    text-decoration: none !important; /* Убираем подчёркивание */
 }
-.site-header a {
-    color: #212020;
-    transition: color .15s ease-in-out;
+
+.site-header nav a:hover {
+    color: #ff6b6b !important; /* Цвет при наведении (можешь выбрать другой) */
+    text-decoration: none !important; /* Подстраховка, чтобы точно не подчёркивалось */
 }
+
 .site-header a:hover {
     color: #fff;
     text-decoration: none;
 }
 
-nav a {
-    text-decoration: none;
+.site-header nav a {
+    font-size: 28px !important;
 }
 
 .carousel-caption {
@@ -63,7 +69,6 @@ nav a {
     background-color: #e5e5e5;
 }
 
-
 /*
 * Extra utilities
 */
@@ -73,9 +78,9 @@ nav a {
 }
 
 @media (min-width: 768px) {
-  .flex-md-equal > * {
-    flex: 1;
-  }
+    .flex-md-equal > * {
+        flex: 1;
+    }
 }
 
 .cart-button {
@@ -95,6 +100,62 @@ nav a {
     padding: 0; /* Убираем лишние отступы */
     text-align: center;
     border-radius: 50%; /* Делаем кружок */
+}
+
+/* Для обычных экранов */
+.navbar-nav .nav-item .nav-link {
+    font-size: 18px;
+    padding: 10px 15px;
+}
+
+/* Для мобильных экранов */
+@media (max-width: 768px) {
+    /* Уменьшаем шрифт для мобильных устройств */
+    .site-header nav a {
+        font-size: 16px !important; /* Уменьшаем размер шрифта */
+    }
+
+    /* Убираем отступы и уменьшаем шрифт для мобильных устройств */
+    .navbar-nav .nav-item .nav-link {
+        font-size: 17px !important; /* Уменьшаем шрифт для мобильных экранов */
+        padding: 8px 12px; /* Уменьшаем отступы */
+    }
+
+    /* Изменяем выравнивание */
+    .site-header nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between; /* Элементы равномерно распределяются */
+        width: 100%;
+    }
+
+    /* Убираем лишние отступы на мобильных устройствах */
+    .navbar-nav {
+        display: block;
+    }
+
+    .navbar-nav .nav-item {
+        padding: 0; /* Убираем горизонтальные отступы */
+    }
+
+    /* Если меню скрыто (гамбургер меню), показываем его */
+    .navbar-toggler {
+        display: block; /* Убедитесь, что кнопка гамбургера видна */
+    }
+
+    .navbar-nav .nav-item .nav-link {
+        text-align: center; /* Выравниваем текст по центру */
+    }
+}
+
+body {
+    background-color: #F3F0D7 !important;
+    font-family: "URW Chancery L", cursive !important;
+}
+
+
+p, span, h2, h3, h4, h5, h6{
+    font-family: "Bradley Hand", cursive !important;
 }
 
 

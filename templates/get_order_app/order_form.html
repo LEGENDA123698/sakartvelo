@@ -40,7 +40,7 @@
                         <button class="btn btn-sm btn-outline-danger" onclick="updateItem({{ item.id }}, 'decrease')">
                             <i class="fas fa-minus"></i>
                         </button>
-                        <span class="quantity mx-2">{{ item.quantity }} шт.</span>
+                        <span class="quantity mx-2" >{{ item.quantity }} шт.</span>
                         <button class="btn btn-sm btn-outline-success" onclick="updateItem({{ item.id }}, 'increase')">
                             <i class="fas fa-plus"></i>
                         </button>
@@ -92,7 +92,7 @@
                 </div>
                 <button type="submit" class="btn btn-success">Оформить</button>
                 {% if user.is_staff %}
-                    <a href="{% url 'street-list' %}" class="btn btn-warning mt-3">Управление улицами</a>
+                    <a href="{% url 'street-list' %}" class="btn btn-warning">Управление улицами</a>
                 {% endif %}
             </form>
         </div>
@@ -249,38 +249,37 @@
             }
         });
     });
-    </script>
+</script>
     
 
 <script>
     function updateItem(itemId, action) {
-        // Получаем CSRF токен
         const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     
-        // Создаем объект с данными формы
         const formData = new FormData();
         formData.append("action", action);
         formData.append("csrfmiddlewaretoken", csrfToken);
     
-        // Отправляем запрос на сервер
+        console.log("Отправка запроса:", {
+            url: `/orders/card/update-item/${itemId}/`,
+            method: "POST",
+            action: action,
+            itemId: itemId,
+        });
+    
         fetch(`/orders/card/update-item/${itemId}/`, {
             method: "POST",
             body: formData
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Ошибка запроса: ${response.status}`);
-            }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
+            console.log("Ответ сервера:", data);
+    
             if (data.new_quantity !== undefined) {
-                // Обновляем количество на странице
                 const itemElement = document.querySelector(`#item-${itemId}`);
                 const quantityElement = itemElement.querySelector(".quantity");
                 quantityElement.textContent = `${data.new_quantity} шт.`;
     
-                // Обновляем итоговую сумму
                 const totalPriceElement = document.querySelector("h5");
                 totalPriceElement.textContent = `Итоговая сумма: ${data.total_price} грн`;
             } else {

@@ -5,6 +5,13 @@ from django.views.generic import *
 from .models import *
 from .forms import BookingForm
 
+from django.shortcuts import render
+from django.contrib import messages
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
+from .models import Booking_Table
+from .forms import BookingForm
+
 class BookingCreateView(CreateView):
     model = Booking_Table
     form_class = BookingForm
@@ -16,23 +23,17 @@ class BookingCreateView(CreateView):
         date = form.cleaned_data['date']
         time = form.cleaned_data['time']
 
-        # Проверяем, занято ли место на это время
+        # Проверка, есть ли бронирование на этот столик в это время
         if Booking_Table.objects.filter(choice_table=table, date=date, time=time).exists():
-            print("srwatfsarfgtsfgkjfdgjkfjg1000-7")
             messages.error(self.request, "❌ Этот столик уже забронирован на указанное время.")
-            return self.form_invalid(form)
+            return self.form_invalid(form)  # Обновит страницу и покажет ошибку
 
         form.instance.user = self.request.user
         response = super().form_valid(form)
         messages.success(self.request, "✅ Бронирование успешно создано!")
         return response
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        booked_tables = Booking_Table.objects.values_list('choice_table_id', flat=True)
-        context['tables'] = Table_Category.objects.exclude(id__in=booked_tables)
-        context['events'] = Event_Category.objects.all()
-        return context
+
     
 class BookingListView(ListView):
     model = Booking_Table

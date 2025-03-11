@@ -1,8 +1,11 @@
+{% load static %}
+<link href="{% static 'css/dishes/list_dish.css' %}" rel="stylesheet">
+
 <div class="container mt-4">
-    <div class="d-grid gap-2">
+    <div class="d-grid gap-2 ">
         {% for category in categories %}
         <a href="{% url 'dishes-category' category.id %}" 
-           class="btn btn-outline-danger text-start fw-bold shadow-sm p-3 rounded">
+           class="btn btn-outline-danger text-start fw-bold shadow-sm p-3 rounded category-name ">
             {{ category.dish }}
         </a>
         {% empty %} 
@@ -12,4 +15,5 @@
         {% endfor %}
     </div>
 </div>
+
 

@@ -5,12 +5,15 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="{% static 'css/base.css' %}" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'css/main_screen.css' %}">
         <script src="https://kit.fontawesome.com/7283992a6b.js" crossorigin="anonymous"></script>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         
 
 
         <style>
+
+
         .bd-placeholder-img {
             font-size: 1.125rem;
             text-anchor: middle;
@@ -29,32 +32,62 @@
 
     <body>
         
-        
         <header class="site-header sticky-top py-1">
-            <nav class="container d-flex flex-column flex-md-row justify-content-between">
-                <a class="py-2 d-none d-md-inline-block" href="{% url 'list-dish' %}">Меню в закладі</a>
-                <a class="py-2 d-none d-md-inline-block" href="{% url 'submit-review' %}">Оцінювання</a>
-                <a class="py-2 d-none d-md-inline-block" href="{% url 'gallery' %}">Галерея</a>
-                <a class="py-2 d-none d-md-inline-block" href="{% url 'booking' %}">Бронювання</a>
-                <a href="{% url 'profile-menu' %}" class="d-flex align-items-center">
-                    <i class="fa-solid fa-user me-2"></i> 
+            <div class="container-fluid d-flex align-items-center">
+                <!-- Логотип -->
+                <a href="{% url 'main-page' %}" class="me-auto">
+                    <img src="{% static 'img/skartvelo.png' %}" alt="SkartVelo" style="width: 250px; height: auto;">
                 </a>
-            </nav>
+        
+                <!-- Навигация-->
+                <nav class="navbar navbar-expand-lg navbar-light w-100">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav w-100 justify-content-evenly">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'list-dish' %}">Меню в закладі</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'submit-review' %}">Оцінювання</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'gallery' %}">Галерея</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'booking' %}">Бронювання</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'profile-menu' %}">
+                                    <i class="fa-solid fa-user fs-4"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
         </header>
         
+        
+        
+        
+        
+        
+        
+        
         <div class="d-flex justify-content-end">
-            {% if request.resolver_match.url_name != "login" and request.resolver_match.url_name != "register" %}
+            {% if user.is_authenticated %}
+                <a class="btn btn-secondary d-inline-block d-md-none position-relative cart-button" href="{% url 'order-page' %}">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                </a>
                 <a class="btn btn-secondary d-none d-md-inline-block position-relative cart-button" href="{% url 'order-page' %}">
                     <i class="fa-solid fa-cart-shopping"></i>
                 </a>
             {% endif %}
         </div>
         
-        <div class="mt-3" style="position: absolute; left: 0;">
-            <a href="{% url 'main-page' %}">
-                <img src="{% static 'img/skartvelo.png' %}" alt="SkartVelo" style="width: 250px; height: auto; display: block;">
-            </a>
-        </div>
+        
         
 
 
