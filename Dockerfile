@@ -17,6 +17,10 @@ COPY . /app/
 
 RUN python manage.py collectstatic --noinput
 RUN python manage.py migrate
+DJANGO_SUPERUSER_USERNAME=admin \
+DJANGO_SUPERUSER_EMAIL=admin@example.com \
+DJANGO_SUPERUSER_PASSWORD=admin \
+python manage.py createsuperuser --noinput
 
 EXPOSE 8000
 
