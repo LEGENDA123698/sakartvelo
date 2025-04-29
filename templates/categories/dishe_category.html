@@ -8,7 +8,7 @@
             {% include 'categories/list_categories_in_dishes.html' %}
         </div>
         <div class="col-md-9">
-            <h2>Блюда в категории "{{ category.dish }}"</h2>
+            <h2>Страви у категорії "{{ category.dish }}"</h2>
             <div class="row">
                 {% for dish in dishes %}
                 <div class="col-md-4 mb-4">
@@ -20,12 +20,12 @@
                             <h5 class="card-title">{{ dish.title }}</h5>
                             <p class="card-text">{{ dish.gram }} г</p>
                             <h5 class="card-text">{{ dish.price }} грн</h5>
-                            <a href="{% url 'detail-dish' dish.pk %}" class="btn btn-primary">Подробнее</a>
+                            <a href="{% url 'detail-dish' dish.pk %}" class="btn btn-primary">Докладніше</a>
                         </div>
                     </div>
                 </div>
                 {% empty %}
-                <p>Нет доступных блюд в этой категории.</p>
+                <p>Немає доступних страв у цій категорії.</p>
                 {% endfor %}
             </div>
         </div>

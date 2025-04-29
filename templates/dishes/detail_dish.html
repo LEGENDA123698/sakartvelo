@@ -10,7 +10,7 @@
                 {% if dish.photo %}
                     <img src="{{ dish.photo.url }}" class="img-fluid rounded" alt="{{ dish.title }}">
                 {% else %}
-                    <p class="text-muted">Изображение отсутствует</p>
+                    <p class="text-muted">Зображення відсутнє</p>
                 {% endif %}
             </div>
         </div>
@@ -27,10 +27,10 @@
                 {% if user.is_staff %}
                 <div class="mt-4 d-flex gap-2">
                     <a href="{% url 'update-dish' dish.pk %}" class="btn btn-warning">
-                        <i class="fas fa-edit"></i> Редактировать
+                        <i class="fas fa-edit"></i> Редагувати
                     </a>
                     <a href="{% url 'delete-dish' dish.pk %}" class="btn btn-danger">
-                        <i class="fas fa-trash-alt"></i> Удалить
+                        <i class="fas fa-trash-alt"></i> Видалити
                     </a>
                 </div>
                 {% endif %}
@@ -43,15 +43,15 @@
                                {% if not user.is_authenticated %}disabled{% endif %}>
                         <button type="submit" class="btn btn-success" 
                                 {% if not user.is_authenticated %}disabled{% endif %}>
-                            <i class="fas fa-shopping-cart"></i> Добавить в заказ
+                            <i class="fas fa-shopping-cart"></i> Додати на замовлення
                         </button>
                     </div>
                 </form>
 
                 <!-- Сообщение и кнопка "Войти" для неавторизованных пользователей -->
                 {% if not user.is_authenticated %}
-                <p class="text-danger mt-2">Войдите в систему, чтобы добавить в заказ.</p>
-                <a href="{% url 'login' %}" class="btn btn-primary mt-2">Войти</a>
+                <p class="text-danger mt-2">Увійдіть до системи, щоб додати замовлення.</p>
+                <a href="{% url 'login' %}" class="btn btn-primary mt-2">Увійти</a>
                 {% endif %}
             </div>
         </div>

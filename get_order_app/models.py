@@ -2,7 +2,7 @@ from django.db import models
 from auth_app.models import User
 from menu_app.models import Dishes
 
-
+# заказ весь
 class ResultSolution(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
     items = models.ManyToManyField(Dishes, through='OrderItem', related_name='orders')
@@ -15,7 +15,7 @@ class ResultSolution(models.Model):
     def __str__(self):
         return f"Order #{self.id} by {self.user.username}"
 
-
+# Модель для связки конкретных блюд в заказе
 class OrderItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="order_items")
     order = models.ForeignKey(ResultSolution, on_delete=models.CASCADE, related_name='order_items')

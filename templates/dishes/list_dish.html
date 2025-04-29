@@ -49,12 +49,12 @@
                             <h5 class="card-title">{{ dish.title }}</h5>
                             <p class="card-text">{{ dish.gram|truncatechars:100 }} г</p>
                             <h5>{{ dish.price|truncatechars:100 }} грн</h5>
-                            <a href="{% url 'detail-dish' dish.pk %}" class="btn btn-primary w-100">Подробнее</a>
+                            <a href="{% url 'detail-dish' dish.pk %}" class="btn btn-primary w-100">Докладніше</a>
                         </div>
                     </div>
                 </div>
                 {% empty %}
-                <p class="text-center">Нет доступных блюд.</p>
+                <p class="text-center">Немає доступних страв.</p>
                 {% endfor %}
             </div>
 
@@ -63,19 +63,19 @@
                 <ul class="pagination justify-content-center">
                     {% if page_obj.has_previous %}
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Предыдущая">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Попередня">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
                     {% endif %}
 
                     <li class="page-item disabled">
-                        <span class="page-link">Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+                        <span class="page-link">Сторінка {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
                     </li>
 
                     {% if page_obj.has_next %}
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Следующая">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Наступна">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>

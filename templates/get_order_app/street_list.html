@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h2>Управление улицами</h2>
+    <h2>Управління вулицями</h2>
     
 
     <!-- Форма добавления улицы -->
@@ -10,7 +10,7 @@
         {% csrf_token %}
         {{ form.as_p }}
         <input type="hidden" name="action" value="add">
-        <button type="submit" class="btn btn-primary">Добавить улицу</button>
+        <button type="submit" class="btn btn-primary">Додати вулицю</button>
     </form>
     <br>
     <a href="{% url 'order-page' %}" class="btn btn-secondary mb-3">Назад</a>
@@ -18,8 +18,7 @@
 
     <hr>
 
-    <!-- Список улиц -->
-    <h4>Список улиц</h4>
+    <h4>Список вулиць</h4>
     <ul class="list-group">
         {% for street in streets %}
         <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -28,7 +27,7 @@
                 {% csrf_token %}
                 <input type="hidden" name="action" value="delete">
                 <input type="hidden" name="street_id" value="{{ street.id }}">
-                <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                <button type="submit" class="btn btn-danger btn-sm">Видалити</button>
             </form>
         </li>
         {% endfor %}

@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="container mt-4">
-    <h2>Удаление столика</h2>
-    <p>Вы уверены, что хотите удалить столик {{ object.number }}?</p>
+    <h2>Видалення столика</h2>
+    <p>Ви впевнені, що бажаєте видалити столик {{ object.number }}?</p>
     <form method="post">
         {% csrf_token %}
-        <button type="submit" class="btn btn-danger">Удалить</button>
-        <a href="{% url 'booking-list-for-choice' %}" class="btn btn-secondary">Отмена</a>
+        <button type="submit" class="btn btn-danger">Видалити</button>
+        <a href="{% url 'booking-list-for-choice' %}" class="btn btn-secondary">Скасування</a>
     </form>
 </div>
 {% endblock %}

@@ -9,7 +9,7 @@
 {% block content %}
 <div class="container mt-5">
     <div class="text-center mb-4">
-        <h2>Оцените блюдо и сервис</h2>
+        <h2>Оцініть страву та сервіс</h2>
     </div>
 
     <div class="card p-4 shadow">
@@ -18,7 +18,7 @@
                 {% csrf_token %}
 
                 <div class="mb-3">
-                    <label class="form-label">Оценка блюда:</label>
+                    <label class="form-label">Оцінка страви:</label>
                     <div class="star-rating" data-field="dish-rating">
                         <i class="fas fa-star" data-value="1"></i>
                         <i class="fas fa-star" data-value="2"></i>
@@ -30,7 +30,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Оценка сервиса:</label>
+                    <label class="form-label">Оцінка сервісу:</label>
                     <div class="star-rating" data-field="service-rating">
                         <i class="fas fa-star" data-value="1"></i>
                         <i class="fas fa-star" data-value="2"></i>
@@ -42,54 +42,56 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Комментарий:</label>
-                    <textarea class="form-control" name="comment" rows="4" placeholder="Напишите свой отзыв..."></textarea>
+                    <label class="form-label">Коментар:</label>
+                    <textarea class="form-control" name="comment" rows="4" placeholder="Напишіть свій відгук..."></textarea>
                 </div>
 
                 <div class="text-center">
-                    <button type="submit" class="btn btn-primary btn-lg">Отправить</button>
+                    <button type="submit" class="btn btn-primary btn-lg">Надіслати</button>
                 </div>
             </form>
         {% else %}
             <div class="text-center">
-                <p class="text-danger">Вы должны войти в систему, чтобы оставить отзыв.</p>
-                <a href="{% url 'login' %}" class="btn btn-primary">Войти</a>
+                <p class="text-danger">Ви повинні увійти до системи, щоб залишити відгук.</p>
+                <a href="{% url 'login' %}" class="btn btn-primary">Увійти</a>
             </div>
         {% endif %}
     </div>
 </div>
 
+<!-- Этот скрипт отвечает за отображение и поведение звёздного рейтинга -->
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".star-rating i").forEach((star) => {
-        star.addEventListener("mouseover", function () {
-            const value = this.getAttribute("data-value");
-            const field = this.parentNode.getAttribute("data-field");
-            highlightStars(field, value);
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".star-rating i").forEach((star) => {
+            star.addEventListener("mouseover", function () {
+                const value = this.getAttribute("data-value");
+                const field = this.parentNode.getAttribute("data-field");
+                highlightStars(field, value);
+            });
+
+            star.addEventListener("click", function () {
+                const value = this.getAttribute("data-value");
+                const field = this.parentNode.getAttribute("data-field");
+                document.getElementById(field).value = value;
+                highlightStars(field, value);
+            });
+
+            star.addEventListener("mouseleave", function () {
+                const field = this.parentNode.getAttribute("data-field");
+                const selectedValue = document.getElementById(field).value;
+                highlightStars(field, selectedValue);
+            });
         });
 
-        star.addEventListener("click", function () {
-            const value = this.getAttribute("data-value");
-            const field = this.parentNode.getAttribute("data-field");
-            document.getElementById(field).value = value;
-            highlightStars(field, value);
-        });
-
-        star.addEventListener("mouseleave", function () {
-            const field = this.parentNode.getAttribute("data-field");
-            const selectedValue = document.getElementById(field).value;
-            highlightStars(field, selectedValue);
-        });
+        function highlightStars(field, value) {
+            document.querySelectorAll(`[data-field="${field}"] i`).forEach((star) => {
+                star.classList.toggle("text-warning", star.getAttribute("data-value") <= value);
+            });
+        }
     });
-
-    function highlightStars(field, value) {
-        document.querySelectorAll(`[data-field="${field}"] i`).forEach((star) => {
-            star.classList.toggle("text-warning", star.getAttribute("data-value") <= value);
-        });
-    }
-});
 </script>
 
+<!-- скрипт который автоматически скрывает уведомления -->
 <script>
     setTimeout(function() {
         let messages = document.querySelectorAll('.alert');

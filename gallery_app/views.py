@@ -17,7 +17,7 @@ class ImageUploadView(SuccessMessageMixin, CreateView):
     form_class = ImageForm
     template_name = "gallery_app/image_form.html"
     success_url = reverse_lazy("gallery")
-    success_message = "Фото успешно добавлено!"
+    success_message = "Фото успішно додано!"
 
 
 

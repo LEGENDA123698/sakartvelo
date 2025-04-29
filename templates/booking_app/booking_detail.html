@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container mt-4">
-    <h2 class="text-center mb-4">📅 Детали бронирования</h2>
+    <h2 class="text-center mb-4">📅 Деталі бронювання</h2>
 
     <div class="card shadow-lg p-4 border-0">
         <div class="card-body">
@@ -10,11 +10,11 @@
 
             <ul class="list-group list-group-flush">
                 <li class="list-group-item"><strong>🍽 Столик:</strong> {{ booking.choice_table }}</li>
-                <li class="list-group-item"><strong>🎉 Событие:</strong> {{ booking.choice_event }}</li>
+                <li class="list-group-item"><strong>🎉 Подія:</strong> {{ booking.choice_event }}</li>
                 <li class="list-group-item"><strong>📅 Дата:</strong> {{ booking.date|date:"d.m.Y" }}</li>
-                <li class="list-group-item"><strong>⏰ Время:</strong> {{ booking.time }}</li>
-                <li class="list-group-item"><strong>👥 Количество людей:</strong> {{ booking.number_of_people }}</li>
-                <li class="list-group-item"><strong>💬 Комментарий:</strong> {{ booking.comment|default:"<span class='text-muted'>Нет комментариев</span>"|safe }}</li>
+                <li class="list-group-item"><strong>⏰ Час:</strong> {{ booking.time }}</li>
+                <li class="list-group-item"><strong>👥 Кількість людей:</strong> {{ booking.number_of_people }}</li>
+                <li class="list-group-item"><strong>💬 Коментар:</strong> {{ booking.comment|default:"<span class='text-muted'>Нет комментариев</span>"|safe }}</li>
             </ul>
 
             <div class="d-flex justify-content-between mt-4">
@@ -22,7 +22,7 @@
                     <i class="bi bi-arrow-left"></i> Назад
                 </a>
                 <a href="{% url 'booking-delete' booking.pk %}" class="btn btn-outline-danger">
-                    <i class="bi bi-trash"></i> Удалить
+                    <i class="bi bi-trash"></i> Видалити
                 </a>
             </div>
         </div>

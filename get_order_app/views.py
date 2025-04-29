@@ -24,7 +24,6 @@ class OrderDetailView(DetailView):
 
 
 class OrderDeleteView(DeleteView):
-    """Позволяет пользователю удалить заказ"""
     model = ResultSolution
     template_name = "get_order_app/delete_order.html"
     success_url = reverse_lazy("order-list")
@@ -75,17 +74,16 @@ def order_page(request):
     }
     return render(request, 'get_order_app/order_form.html', context)
 
-
+# Страница управления улицами
 @login_required
 def street_list(request):
-    """Страница управления улицами"""
     streets = Street.objects.all()
     form = StreetForm()
     return render(request, 'get_order_app/street_list.html', {'streets': streets, 'form': form})
 
+# Добавление и удаление улицы
 @login_required
 def manage_street(request):
-    """Добавление и удаление улицы"""
     if request.method == "POST":
         action = request.POST.get("action")
         if action == "add":
@@ -98,7 +96,7 @@ def manage_street(request):
     
     return redirect("street-list")
 
-#добавление блюдо в корзину или создание его.
+#добавление блюдо в корзину или создание его
 def add_to_order(request, pk):
     dish = get_object_or_404(Dishes, pk=pk)
 
@@ -136,7 +134,7 @@ def add_to_order(request, pk):
     return redirect('detail-dish', pk=dish.pk)
 
 
-
+# настройки вывода улиц
 def street_suggestions(request):
     query = request.GET.get("query", "").strip().lower()
     
@@ -149,8 +147,8 @@ def street_suggestions(request):
     return JsonResponse({"streets": street_list})
 
 
+# Функция для изменения количества блюд в корзине
 def update_item(request, item_id):
-    """Функция для изменения количества блюд в корзине."""
     item = get_object_or_404(OrderItem, id=item_id)
     
     if request.method == "POST":
@@ -163,15 +161,14 @@ def update_item(request, item_id):
 
         # Фильтруем только активный заказ пользователя
         active_order = ResultSolution.objects.filter(user=request.user, is_active=True).first()
-        order_items = OrderItem.objects.filter(order=active_order)
+        order_items = OrderItem.objects.filter(order=active_order)#!!!!
         total_price = sum(float(order_item.dish.price) * order_item.quantity for order_item in order_items)
 
         return JsonResponse({'success': True, 'new_quantity': item.quantity, 'total_price': total_price})
 
     
-#отображение корзины с текущими позициями и итоговой ценой.
+#отображение корзины с текущими позициями и итоговой ценой
 def card_view(request):
-    """Отображение корзины."""
     order_items = OrderItem.objects.filter(order__user=request.user)
     total_price = sum(item.dish.price * item.quantity for item in order_items)
     
@@ -183,7 +180,6 @@ def card_view(request):
 
 
 def delete_order_item(request, item_id):
-    """Удаление блюда из корзины."""
     if request.method == 'POST':
         item = get_object_or_404(OrderItem, id=item_id)
         order = item.order

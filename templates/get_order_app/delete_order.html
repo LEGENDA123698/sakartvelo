@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container mt-4">
-    <h2 class="text-center">Удаление заказа</h2>
+    <h2 class="text-center">Видалення замовлення</h2>
 
     <div class="card shadow-sm p-4 text-center">
-        <p>Вы уверены, что хотите удалить этот заказ?</p>
+        <p>Ви впевнені, що хочете видалити це замовлення?</p>
 
         <form method="post">
             {% csrf_token %}
-            <button type="submit" class="btn btn-danger">Удалить</button>
-            <a href="{% url 'order-list' %}" class="btn btn-secondary">Отмена</a>
+            <button type="submit" class="btn btn-danger">Видалити</button>
+            <a href="{% url 'order-list' %}" class="btn btn-secondary">Скасування</a>
         </form>
     </div>
 </div>

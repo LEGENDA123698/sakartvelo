@@ -5,13 +5,6 @@ from django.views.generic import *
 from .models import *
 from .forms import BookingForm
 
-from django.shortcuts import render
-from django.contrib import messages
-from django.urls import reverse_lazy
-from django.views.generic import CreateView
-from .models import Booking_Table
-from .forms import BookingForm
-
 class BookingCreateView(CreateView):
     model = Booking_Table
     form_class = BookingForm
@@ -25,12 +18,12 @@ class BookingCreateView(CreateView):
 
         # Проверка, есть ли бронирование на этот столик в это время
         if Booking_Table.objects.filter(choice_table=table, date=date, time=time).exists():
-            messages.error(self.request, "❌ Этот столик уже забронирован на указанное время.")
+            messages.error(self.request, "❌ Цей столик вже заброньований на вказаний час.")
             return self.form_invalid(form)  # Обновит страницу и покажет ошибку
 
         form.instance.user = self.request.user
         response = super().form_valid(form)
-        messages.success(self.request, "✅ Бронирование успешно создано!")
+        messages.success(self.request, "✅ Бронювання успішно створено!")
         return response
 
 

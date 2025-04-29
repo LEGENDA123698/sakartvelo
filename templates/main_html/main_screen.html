@@ -103,26 +103,11 @@
 
     <hr>
 
-    <h3>Комментарии (<span id="comments-count">{{ total_comments }}</span>)</h3>
+    <h3>Коментарі (<span id="comments-count">{{ total_comments }}</span>)</h3>
  
-
+    <!-- это часть нужна для загрузки скрипта под номером №1(скрпит по коментариям)-->
     <div id="comments-container">
       {% for comment in comments|slice:":3" %}
-      <div class="border p-2 mb-2 comment-item">
-          <p><b>{{ comment.user.username }}</b></p>
-          <p>Оценка за блюда: ⭐ {{ comment.dish_rating }}/5</p>
-          <p>Оценка за сервис: ⭐ {{ comment.service_rating }}/5</p>
-          <p>Комментарий: {{ comment.comment }}</p>
-          <p><small>Дата: {{ comment.created_at|date:"d.m.Y H:i" }}</small></p>
-  
-          {% if request.user.is_staff %}
-          <button 
-              class="btn btn-danger btn-sm delete-comment-btn" 
-              data-comment-id="{{ comment.id }}"
-          >
-              🗑
-          </button>
-          {% endif %}
       </div>
       {% endfor %}
     </div>
@@ -135,15 +120,17 @@
     
 </div>
 
+<!-- скрипт передаёт информацию из Django в JavaScript — проверяет, является ли пользователь staff -->
 <script>
-  const isStaff = {{ is_staff|yesno:"true,false" }}; // Передаем статус staff в JavaScript
+  const isStaff = {{ is_staff|yesno:"true,false" }};
 </script>
 
+<!-- скрипт передает количество комментариев из Django в JavaScript -->
 <script>
   let totalComments = {{ total_comments|default:0 }};
 </script>
 
-
+<!-- скрипт загружает комментарии с сервера и отображает их на странице №1 -->
 <script>
   function getStars(rating) {
     return "⭐".repeat(rating);
@@ -164,12 +151,11 @@
                       "rounded", "shadow-sm", "bg-light"
                     );
 
-                    // Формируем HTML комментария
                     let commentHTML = `
                         <h4><b>${comment.user}</b></h4>
-                        <p>Оценка за блюда: ${'⭐'.repeat(comment.dish_rating)}</p>
-                        <p>Оценка за сервис: ${'⭐'.repeat(comment.service_rating)}</p>
-                        <p>Комментарий: ${comment.comment}</p>
+                        <p>Оцінка за страви: ${'⭐'.repeat(comment.dish_rating)}</p>
+                        <p>Оцінка за сервіс: ${'⭐'.repeat(comment.service_rating)}</p>
+                        <p>Коментар: ${comment.comment}</p>
                         <p>Дата: ${comment.created_at}</p>
                     `;
 
@@ -188,7 +174,7 @@
                     container.appendChild(div);
                 });
 
-                // Обновляем обработчики кнопок удаления
+
                 attachDeleteButtonHandlers();
 
                 offset += data.comments.length;
@@ -207,7 +193,7 @@
   function updateCommentsCount(count) {
     document.getElementById("comments-count").textContent = count;
   }
-    // Автоматически загружаем первые комментарии при загрузке страницы
+
     window.onload = function () {
       loadMoreComments();
   };
@@ -215,7 +201,7 @@
 </script>
 
 
-
+<!-- скрипт обновляет количество комментариев на странице -->
 <script>
   function updateCommentsCount() {
     let countElement = document.getElementById("comments-count");
@@ -224,6 +210,7 @@
   }
 </script>
 
+<!-- скрипт получает значение CSRF-токена из cookies -->
 <script>
   function getCSRFToken() {
       const csrftoken = document.cookie.split("; ")
@@ -233,6 +220,8 @@
   }
 </script>
 
+<!-- скрипт привязывает кнопки для удаления комментариев
+ ( при нажатие на кнопку удаления, скрипт удаляет комментарий только с экрана, но не с базы данных) -->
 <script>
   function attachDeleteButtonHandlers() {
       document.querySelectorAll(".delete-comment-btn").forEach(button => {
@@ -244,18 +233,19 @@
   }
 </script>
 
+<!-- скрипт удаляет комментарий с сервера и из DOM
+ (скрипт отправляет запрос на сервер, чтобы удалить комментарий и с базы данных, и после этого удаляет его с экрана) -->
 <script>
   function deleteComment(commentId) {
       fetch(`/mark/delete_comment/${commentId}/`, {
           method: "POST",
           headers: {
-              "X-CSRFToken": getCSRFToken(),  // Включает CSRF-токен в запрос
+              "X-CSRFToken": getCSRFToken(),
           },
       })
           .then(response => response.json())
           .then(data => {
               if (data.success) {
-                  // Удаляет элемент комментария из DOM
                   const commentElement = document.querySelector(`[data-comment-id="${commentId}"]`).closest(".comment-item");
                   if (commentElement) {
                       commentElement.remove();
@@ -264,7 +254,7 @@
                   alert("Ошибка: " + data.error);
               }
           })
-          .catch(error => console.error("Ошибка при удалении комментария:", error));
+          .catch(error => console.error("Помилка при видаленні коментаря:", error));
   }
 </script>
 
