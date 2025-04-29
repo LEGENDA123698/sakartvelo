@@ -1,11 +1,11 @@
 {% include 'base.html' %}
 {% block content %}
 <div class="container mt-5">
-    <h2>Удалить категорию "{{ object.dish }}"?</h2>
+    <h2>Видалити категорію "{{ object.dish }}"?</h2>
     <form method="post">
         {% csrf_token %}
-        <button type="submit" class="btn btn-danger">Удалить</button>
-        <a href="{% url 'list-category-for-delete' %}" class="btn btn-secondary">Отмена</a>
+        <button type="submit" class="btn btn-danger">Видалити</button>
+        <a href="{% url 'list-category-for-delete' %}" class="btn btn-secondary">Скасування</a>
     </form>
 </div>
 {% endblock %}

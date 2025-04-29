@@ -2,15 +2,15 @@
 {% block content %}
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Список столиков</h2>
-    <a href="{% url 'table-add' %}" class="btn btn-success">Добавить столик</a>
+    <h2>Список столиків</h2>
+    <a href="{% url 'table-add' %}" class="btn btn-success">Додати столик</a>
 </div>
 
 <table class="table">
     <thead>
         <tr>
             <th>Номер</th>
-            <th>Действия</th>
+            <th>Дії</th>
         </tr>
     </thead>
     <tbody>
@@ -18,8 +18,8 @@
         <tr>
             <td>{{ table.number }}</td>
             <td>
-                <a href="{% url 'table-edit' table.id %}" class="btn btn-warning btn-sm">Редактировать</a>
-                <a href="{% url 'table-delete' table.id %}" class="btn btn-danger btn-sm">Удалить</a>
+                <a href="{% url 'table-edit' table.id %}" class="btn btn-warning btn-sm">Редагувати</a>
+                <a href="{% url 'table-delete' table.id %}" class="btn btn-danger btn-sm">Видалити</a>
             </td>
         </tr>
         {% endfor %}
@@ -27,15 +27,15 @@
 </table>
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Список мероприятий</h2>
-    <a href="{% url 'event-add' %}" class="btn btn-success">Добавить мероприятие</a>
+    <h2>Список заходів</h2>
+    <a href="{% url 'event-add' %}" class="btn btn-success">Додати захід</a>
 </div>
 
 <table class="table">
     <thead>
         <tr>
-            <th>Название</th>
-            <th>Действия</th>
+            <th>Назва</th>
+            <th>Дії</th>
         </tr>
     </thead>
     <tbody>
@@ -43,8 +43,8 @@
         <tr>
             <td>{{ event.event }}</td>
             <td>
-                <a href="{% url 'event-edit' event.id %}" class="btn btn-warning btn-sm">Редактировать</a>
-                <a href="{% url 'event-delete' event.id %}" class="btn btn-danger btn-sm">Удалить</a>
+                <a href="{% url 'event-edit' event.id %}" class="btn btn-warning btn-sm">Редагувати</a>
+                <a href="{% url 'event-delete' event.id %}" class="btn btn-danger btn-sm">Видалити</a>
             </td>
         </tr>
         {% endfor %}

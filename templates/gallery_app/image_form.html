@@ -4,26 +4,26 @@
     <link rel="stylesheet" href="{% static 'gallery.css' %}">
 {% endblock %}
 {% block content %}
-<h2>Добавить фото в галерею</h2>
+<h2>Додати фото до галереї</h2>
 <!-- Форма загрузки фото -->
 <form action="{% url 'upload-image' %}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" id="upload-button" class="btn btn-success" disabled>Загрузить</button>
+    <button type="submit" id="upload-button" class="btn btn-success" disabled>Завантажити</button>
 </form>
-<a href="{% url 'gallery' %}" class="btn btn-secondary mt-3">Назад в галерею</a>
+<a href="{% url 'gallery' %}" class="btn btn-secondary mt-3">Назад до галереї</a>
 
+<!-- Этот скрипт следит за изменениями в поле для загрузки файла . Когда файл выбран, кнопка загрузки становится активной. 
+ Если файл не выбран, кнопка остается заблокированной. -->
 <script>
-    // Находим элементы формы
-    const fileInput = document.querySelector('input[type="file"]'); // Поле для выбора файла
-    const uploadButton = document.getElementById('upload-button'); // Кнопка "Загрузить"
+    const fileInput = document.querySelector('input[type="file"]'); 
+    const uploadButton = document.getElementById('upload-button'); 
 
-    // Добавляем обработчик события на изменение поля выбора файла
     fileInput.addEventListener('change', function () {
         if (fileInput.files.length > 0) {
-            uploadButton.removeAttribute('disabled'); // Разблокируем кнопку
+            uploadButton.removeAttribute('disabled');
         } else {
-            uploadButton.setAttribute('disabled', 'true'); // Блокируем кнопку
+            uploadButton.setAttribute('disabled', 'true');
         }
     });
 </script>

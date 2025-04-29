@@ -3,12 +3,12 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2>Редактировать блюдо</h2>
+    <h2>Редагувати страву</h2>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn btn-success">Сохранить изменения</button>
+        <button type="submit" class="btn btn-success">Зберегти зміни</button>
     </form>
-    <a href="{% url 'detail-dish' object.pk %}" class="btn btn-secondary mt-3">Отмена</a>
+    <a href="{% url 'detail-dish' object.pk %}" class="btn btn-secondary mt-3">Скасування</a>
 </div>
 {% endblock %}

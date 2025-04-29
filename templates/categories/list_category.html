@@ -3,13 +3,13 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="mb-4">Список категорий</h2>
+    <h2 class="mb-4">Список категорій</h2>
     <div class="table-responsive">
         <table class="table table-bordered table-striped table-hover">
             <thead class="table-dark">
                 <tr>
-                    <th class="text-center">Название категории</th>
-                    <th class="text-end">Действия</th>
+                    <th class="text-center">Назва категорії</th>
+                    <th class="text-end">Дії</th>
                 </tr>
             </thead>
             <tbody>
@@ -18,16 +18,16 @@
                     <td class="text-center">{{ category.dish }}</td>
                     <td class="text-end">
                         <a href="{% url 'update-category' category.id %}" class="btn btn-warning btn-sm">
-                            ✏️ Редактировать
+                            ✏️ Редагувати
                         </a>
                         <a href="{% url 'delete-category' category.id %}" class="btn btn-danger btn-sm">
-                            ❌ Удалить
+                            ❌ Видалити
                         </a>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="2" class="text-center">Категорий нет</td>
+                    <td colspan="2" class="text-center">Категорій немає</td>
                 </tr>
                 {% endfor %}
             </tbody>

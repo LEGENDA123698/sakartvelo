@@ -11,5 +11,5 @@ class BookingForm(forms.ModelForm):
             'number_of_people': forms.NumberInput(attrs={
                 'type': 'number', 'min': 1, 'max': 12, 'required': True
             }),
-            'comment': forms.Textarea(attrs={'rows': 4, 'cols': 40, 'placeholder': 'Добавьте комментарий...'}),
+            'comment': forms.Textarea(attrs={'rows': 4, 'cols': 40, 'placeholder': 'Додати коментар...'}),
         }

@@ -9,19 +9,19 @@
 <div class="d-flex justify-content-center align-items-center" style="height: 75vh;">
     <div class="card p-4 shadow-lg" style="max-width: 400px; width: 100%;">
         <div class="card-body text-center">
-            <h2 class="mb-4">Вход в аккаунт</h2>
+            <h2 class="mb-4">Вхід до облікового запису</h2>
 
             <form method="post" action="{% url 'login' %}">
                 {% csrf_token %}
 
                 {% if form.errors %}
                     <div class="alert alert-danger">
-                        <strong>Ошибка!</strong> Проверьте правильность введенных данных.
+                        <strong>Помилка!</strong> Перевірте правильність введених даних.
                     </div>
                 {% endif %}
 
-                <div class="mb-3">
-                    {{ form.username.label_tag }}
+                <div class="mb-3 d-flex align-items-center">
+                    <label class="me-2 mb-0">{{ form.username.label }}</label>
                     {{ form.username }}
                 </div>
 
@@ -30,10 +30,10 @@
                     {{ form.password }}
                 </div>
 
-                <button class="btn btn-primary w-100" type="submit">Войти</button>
+                <button class="btn btn-primary w-100" type="submit">Увійти</button>
 
                 <p class="mt-3">
-                    Нет аккаунта? <a href="{% url 'register' %}">Зарегистрируйтесь</a>
+                    Немає облікового запису? <a href="{% url 'register' %}">Зареєструйтесь</a>
                 </p>
             </form>
         </div>

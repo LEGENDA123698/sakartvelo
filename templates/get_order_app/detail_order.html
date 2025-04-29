@@ -2,15 +2,15 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h2 class="text-center">Детали заказа</h2>
+    <h2 class="text-center">Деталі замовлення</h2>
 
     <div class="card shadow-sm p-4">
-        <h5>Заказ #{{ order.id }}</h5>
+        <h5>Замовлення #{{ order.id }}</h5>
         <p><strong>Дата доставки:</strong> {{ order.delivery_date }}</p>
-        <p><strong>Время доставки:</strong> {{ order.delivery_time }}</p>
-        <p><strong>Комментарий:</strong> {{ order.comment|default:"Нет комментариев" }}</p>
+        <p><strong>Час доставки:</strong> {{ order.delivery_time }}</p>
+        <p><strong>Коментар:</strong> {{ order.comment|default:"Нет комментариев" }}</p>
 
-        <h3>Блюда:</h3>
+        <h3>Страви:</h3>
         <ul class="list-group">
             {% for item in order.order_items.all %}
             <li class="list-group-item d-flex justify-content-between">
@@ -18,15 +18,15 @@
                 <span>{{ item.dish.price }} грн</span>
             </li>
             {% empty %}
-            <li class="list-group-item">Нет добавленных блюд.</li>
+            <li class="list-group-item">Немає доданих страв.</li>
             {% endfor %}
         </ul>
 
-        <h3 class="mt-3">Итоговая сумма: {{ order.total_price }} грн</h3>
+        <h3 class="mt-3">Підсумкова сума: {{ order.total_price }} грн</h3>
 
         <div class="d-flex justify-content-between mt-3">
             <a href="{% url 'order-list' %}" class="btn btn-secondary">Назад</a>
-            <a href="{% url 'delete-order' order.pk %}" class="btn btn-danger">Удалить</a>
+            <a href="{% url 'delete-order' order.pk %}" class="btn btn-danger">Видалити</a>
         </div>
     </div>
 </div>

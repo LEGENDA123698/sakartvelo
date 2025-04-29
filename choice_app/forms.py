@@ -6,7 +6,7 @@ class DishCategoryForm(forms.ModelForm):
         model = Dish_Category
         fields = ['dish']
         widgets = {
-            'dish': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Название категории'}),
+            'dish': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Назва категорії'}),
         }
         labels = {
             'dish': ''
