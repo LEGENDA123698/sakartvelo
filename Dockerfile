@@ -18,5 +18,5 @@ COPY . /app/
 EXPOSE 8000
 
 # ВАЖНО: запуск миграций и сервера ПРИ СТАРТЕ
-CMD ["sh", "-c", "python manage.py migrate && python manage.py createsu && gunicorn sakartvelo.wsgi:application --bind 0.0.0.0:8000"]
+CMD ["sh", "-c", "python manage.py migrate && python manage.py createsupus && gunicorn sakartvelo.wsgi:application --bind 0.0.0.0:8000"]
 
