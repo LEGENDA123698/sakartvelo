@@ -1,6 +1,7 @@
 from django.db import models
 from auth_app.models import User
 from choice_app.models import Dish_Category
+from cloudinary_storage.storage import MediaCloudinaryStorage
 
 class Dishes(models.Model): 
     title = models.CharField(max_length=500)
@@ -8,7 +9,7 @@ class Dishes(models.Model):
     choice = models.ForeignKey(Dish_Category, on_delete=models.CASCADE, related_name='dishes', null=True, blank=True)
     gram = models.CharField(max_length=4)
     price = models.CharField(max_length=4)
-    photo = models.ImageField(upload_to="photos_for_food_media/", blank=True, null=True)
+    photo = models.ImageField(storage=MediaCloudinaryStorage(), upload_to="photos_for_food_media/", blank=True, null=True)
     
     def __str__(self):
         return self.title
