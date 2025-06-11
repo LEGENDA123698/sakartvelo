@@ -149,7 +149,7 @@ AUTH_USER_MODEL = 'auth_app.User'
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'dxxgl8mvv',
-    'API_KEY': '922645645217489',
-    'API_SECRET': '5wNwZaobJNisMrCt1LBBMTnh0uk',
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
 }
